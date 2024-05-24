@@ -1,0 +1,22 @@
+[1.280s] Invoking command in '/home/vicente/VSNT-CollisionAvoidance/build/asv_perception_classification': PYTHONPATH=/home/vicente/VSNT-CollisionAvoidance/build/asv_perception_classification/prefix_override:/home/vicente/VSNT-CollisionAvoidance/install/asv_perception_classification/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated setup.py develop --editable --build-directory /home/vicente/VSNT-CollisionAvoidance/build/asv_perception_classification/build --no-deps symlink_data --force
+[1.878s] running develop
+[1.879s] /usr/lib/python3/dist-packages/setuptools/command/easy_install.py:158: EasyInstallDeprecationWarning: easy_install command is deprecated. Use build and pip and other standards-based tools.
+[1.879s]   warnings.warn(
+[2.217s] running egg_info
+[2.217s] writing asv_perception_classification.egg-info/PKG-INFO
+[2.224s] writing dependency_links to asv_perception_classification.egg-info/dependency_links.txt
+[2.225s] writing entry points to asv_perception_classification.egg-info/entry_points.txt
+[2.225s] writing requirements to asv_perception_classification.egg-info/requires.txt
+[2.225s] writing top-level names to asv_perception_classification.egg-info/top_level.txt
+[2.229s] reading manifest file 'asv_perception_classification.egg-info/SOURCES.txt'
+[2.232s] writing manifest file 'asv_perception_classification.egg-info/SOURCES.txt'
+[2.234s] running build_ext
+[2.235s] Creating /home/vicente/VSNT-CollisionAvoidance/install/asv_perception_classification/lib/python3.10/site-packages/asv-perception-classification.egg-link (link to .)
+[2.237s] Installing video_publisher script to /home/vicente/VSNT-CollisionAvoidance/install/asv_perception_classification/lib/asv_perception_classification
+[2.237s] Installing yolo_subscriber script to /home/vicente/VSNT-CollisionAvoidance/install/asv_perception_classification/lib/asv_perception_classification
+[2.238s] 
+[2.238s] Installed /home/vicente/VSNT-CollisionAvoidance/build/asv_perception_classification
+[2.238s] running symlink_data
+[2.238s] symbolically linking /home/vicente/VSNT-CollisionAvoidance/build/asv_perception_classification/resource/asv_perception_classification -> /home/vicente/VSNT-CollisionAvoidance/install/asv_perception_classification/share/ament_index/resource_index/packages
+[2.238s] symbolically linking /home/vicente/VSNT-CollisionAvoidance/build/asv_perception_classification/package.xml -> /home/vicente/VSNT-CollisionAvoidance/install/asv_perception_classification/share/asv_perception_classification
+[2.300s] Invoked command in '/home/vicente/VSNT-CollisionAvoidance/build/asv_perception_classification' returned '0': PYTHONPATH=/home/vicente/VSNT-CollisionAvoidance/build/asv_perception_classification/prefix_override:/home/vicente/VSNT-CollisionAvoidance/install/asv_perception_classification/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated setup.py develop --editable --build-directory /home/vicente/VSNT-CollisionAvoidance/build/asv_perception_classification/build --no-deps symlink_data --force

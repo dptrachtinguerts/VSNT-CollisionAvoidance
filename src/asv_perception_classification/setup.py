@@ -20,6 +20,8 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
+            "video_publisher = asv_perception_classification.video_publisher:main",
+            "yolo_subscriber = asv_perception_classification.yolo_subscriber:main"
         ],
     },
 )

@@ -1,0 +1,27 @@
+running egg_info
+writing ../../build/asv_perception_classification/asv_perception_classification.egg-info/PKG-INFO
+writing dependency_links to ../../build/asv_perception_classification/asv_perception_classification.egg-info/dependency_links.txt
+writing entry points to ../../build/asv_perception_classification/asv_perception_classification.egg-info/entry_points.txt
+writing requirements to ../../build/asv_perception_classification/asv_perception_classification.egg-info/requires.txt
+writing top-level names to ../../build/asv_perception_classification/asv_perception_classification.egg-info/top_level.txt
+reading manifest file '../../build/asv_perception_classification/asv_perception_classification.egg-info/SOURCES.txt'
+writing manifest file '../../build/asv_perception_classification/asv_perception_classification.egg-info/SOURCES.txt'
+running build
+running build_py
+copying asv_perception_classification/yolo_subscriber.py -> /home/vicente/VSNT-CollisionAvoidance/build/asv_perception_classification/build/lib/asv_perception_classification
+copying asv_perception_classification/video_publisher.py -> /home/vicente/VSNT-CollisionAvoidance/build/asv_perception_classification/build/lib/asv_perception_classification
+running install
+running install_lib
+copying /home/vicente/VSNT-CollisionAvoidance/build/asv_perception_classification/build/lib/asv_perception_classification/yolo_subscriber.py -> /home/vicente/VSNT-CollisionAvoidance/install/asv_perception_classification/lib/python3.10/site-packages/asv_perception_classification
+copying /home/vicente/VSNT-CollisionAvoidance/build/asv_perception_classification/build/lib/asv_perception_classification/video_publisher.py -> /home/vicente/VSNT-CollisionAvoidance/install/asv_perception_classification/lib/python3.10/site-packages/asv_perception_classification
+byte-compiling /home/vicente/VSNT-CollisionAvoidance/install/asv_perception_classification/lib/python3.10/site-packages/asv_perception_classification/yolo_subscriber.py to yolo_subscriber.cpython-310.pyc
+byte-compiling /home/vicente/VSNT-CollisionAvoidance/install/asv_perception_classification/lib/python3.10/site-packages/asv_perception_classification/video_publisher.py to video_publisher.cpython-310.pyc
+running install_data
+copying package.xml -> /home/vicente/VSNT-CollisionAvoidance/install/asv_perception_classification/share/asv_perception_classification
+running install_egg_info
+removing '/home/vicente/VSNT-CollisionAvoidance/install/asv_perception_classification/lib/python3.10/site-packages/asv_perception_classification-0.0.0-py3.10.egg-info' (and everything under it)
+Copying ../../build/asv_perception_classification/asv_perception_classification.egg-info to /home/vicente/VSNT-CollisionAvoidance/install/asv_perception_classification/lib/python3.10/site-packages/asv_perception_classification-0.0.0-py3.10.egg-info
+running install_scripts
+Installing video_publisher script to /home/vicente/VSNT-CollisionAvoidance/install/asv_perception_classification/lib/asv_perception_classification
+Installing yolo_subscriber script to /home/vicente/VSNT-CollisionAvoidance/install/asv_perception_classification/lib/asv_perception_classification
+writing list of installed files to '/home/vicente/VSNT-CollisionAvoidance/build/asv_perception_classification/install.log'
