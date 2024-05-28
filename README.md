@@ -1,3 +1,3 @@
-# VSNT-CollisionAvoidance
+# Collision Avoidance for Naval Platforms with MOOS-IvP and ROS
 
-readme update #1
+The VSNT-LAB is a naval platform by the Center for Naval Systems Analysis (CASNAV) of the Brazilian Navy. The aim of this work is to expand on the current capabilities of the vessel, through the implementation of a robust and COLREGS-compliant protocol for autonomous collision avoidance. For this endeavor, we take advantage of the suite of sensors present in the ship and build on top of the previous works by CASNAV engineers and fellow University of São Paulo students. 
