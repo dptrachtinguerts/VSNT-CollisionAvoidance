@@ -10,6 +10,10 @@
   <depend>rclpy</depend>
   <depend>sensor_msgs</depend>
   <depend>cv_bridge</depend>
+  <depend>asv_perception_interfaces</depend>
+  <depend>asv_perception_common</depend>
+  <depend>numpy</depend>
+
 
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>
