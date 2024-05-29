@@ -6,7 +6,7 @@ Authors:  Tom Clunie <clunietp@gmail.com>
 """
 
 from sensor_msgs.msg import Imu
-from tf.transformations import euler_from_quaternion
+from transforms3d.euler import quat2euler
 
 class FeedforwardImuController( object ):
     """ 
@@ -36,7 +36,7 @@ class FeedforwardImuController( object ):
             self._last_msg = msg
 
         # imu.orientation is a normalized quaternion.  euler_from_quaternion returns radians
-        rpy = euler_from_quaternion([msg.orientation.x, msg.orientation.y, msg.orientation.z, msg.orientation.w])
+        rpy = quat2euler([msg.orientation.w, msg.orientation.x, msg.orientation.y, msg.orientation.z])
 
         velocity = msg.angular_velocity  # should be rad/s
 
