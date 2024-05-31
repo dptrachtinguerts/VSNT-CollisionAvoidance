@@ -46,6 +46,34 @@ class HomographyNode(Node):
 
         # refresh notification from calibration tool; useful for visualization updates when rosbag is paused/stopped
         self.sub_refresh = self.create_subscription(Empty,'refresh', self.cb_refresh, 1)
+
+        # parameteres declaration
+        self.declare_parameter('imu_yaw_alpha', 0.)
+        self.declare_parameter('imu_yaw_beta', 0.)
+        self.declare_parameter('imu_yaw_gama', 0.)
+
+        self.declare_parameter('imu_pitch_alpha', 0.)
+        self.declare_parameter('imu_pitch_beta', 0.)
+        self.declare_parameter('imu_pitch_gama', 0.)
+
+        self.declare_parameter('imu_roll_alpha', 0.)
+        self.declare_parameter('imu_roll_beta', 0.)
+        self.declare_parameter('imu_roll_gama', 0.)
+
+        self.declare_parameter('radar_img_w', 1024)
+        self.declare_parameter('yaw', 4.)
+        self.declare_parameter('pitch', 80.29)
+        self.declare_parameter('roll', -2.96)
+        self.declare_parameter('fovy', 46.3)
+        self.declare_parameter('tx', 2.5)
+        self.declare_parameter('ty', 6.2)
+        self.declare_parameter('tz', -4.4)
+
+        self.declare_parameter('rgb_frame_id', "camera")
+        self.declare_parameter('radarimg_frame_id', "radar")
+        self.declare_parameter('radar_frame_id', "base_link")
+        self.declare_parameter('radar_range', 500)
+
         
     def cb_refresh(self, msg):
         self.publish()

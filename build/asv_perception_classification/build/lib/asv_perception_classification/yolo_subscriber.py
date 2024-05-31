@@ -20,19 +20,20 @@ class YoloSubscriberNode(Node):
         self.n_inputs = self.get_parameter("n_inputs").value
 
         self.subscription = [self.create_subscription(Image,f'n{i}/video_topic',
-                                                     lambda msg: self.yolo_callback(msg, i), 10) for i in range(self.n_inputs)]
+                                                     lambda msg, idx=i: self.yolo_callback(msg, idx), 10) for i in range(self.n_inputs)]
         self.bridge = CvBridge()
         self.model = YOLO('/home/vicente/VSNT-CollisionAvoidance/src/yolov8n.pt')  # Load YOLOv8 model (nano version)
 
 
         # publishers array of classification array
-        self.pubs = [ self.create_publisher(ClassificationArray,'n%d/output' % i, 1 ) for i in range(self.n_inputs) ]
+        self.pubs = [self.create_publisher(ClassificationArray,'n%d/output' % i, 1) for i in range(self.n_inputs)]
 
         # image publishers for visualization/debugging
-        self.pubs_img = [ self.create_publisher( Image, 'n%d/image' % i, 1 ) for i in range(self.n_inputs) ]
+        self.pubs_img = [self.create_publisher(Image, 'n%d/image' % i, 1 ) for i in range(self.n_inputs)]
 
     def yolo_callback(self, msg, idx):
 
+        self.get_logger().info("Indice -> " + str(idx))
         pub = self.pubs[idx]
         pub_img = self.pubs_img[idx]
 
@@ -60,12 +61,12 @@ class YoloSubscriberNode(Node):
         results = self.model.predict(frame, 
                                 # show=True,    # Show image after inference (debug)
                                 save=False,     # Save prediction results
-                                imgsz=320,      # Image size: changes the size of the image used in the prediction step
+                                imgsz=640,      # Image size: changes the size of the image used in the prediction step
                                                 # if smaller -> faster predictions, but probably less accuracy
                                                 # if higher -> longer prediction times, and probably better accuracy
                                                 # IMPORTANT: does not change the output image size, results are automatically
                                                 # scaled back to the original size
-                                conf=0.5,       # Confidence threshold for detection: higher means more detections, but 
+                                conf=0.4,       # Confidence threshold for detection: lower means more detections, but 
                                                 # also more false positives
                                 classes=[8])    # Class filter: consider only the desired classes (8 == "boat")
 
@@ -75,18 +76,19 @@ class YoloSubscriberNode(Node):
         msg.image_height = results[0].orig_shape[0]
     
         for result in results:
-            cls = Classification()
-            if len(result.boxes.cls) > 0 and result.boxes.cls == 8:
-                cls.label = 'boat'
-                cls.probability = float(result.boxes.conf.numpy())
-                roi = result.boxes.xywh.numpy() # may contain multiple detections
+            for i in range(len(result.boxes.cls)):
 
-            # darknet roi:  ( x, y, w, h ), where x and y are the centers of the detection
-            #  RegionOfInterest x & y are left- and top-most coords
-                cls.roi.width = int(np.uint32( roi[:,2] ))
-                cls.roi.height = int(np.uint32( roi[:,3] ))
-                cls.roi.x_offset = int(np.uint32( roi[:,0] - ( cls.roi.width / 2. ) ))  # convert to left-most x
-                cls.roi.y_offset = int(np.uint32( roi[:,1] - ( cls.roi.height / 2. ) )) # convert to top-most y
+                cls = Classification()
+                cls.label = 'boat'
+                cls.probability = float(result.boxes.conf.numpy()[i])
+                roi = result.boxes.xywh.numpy()[i] # may contain multiple detections
+
+                # yolo roi:  ( x, y, w, h ), where x and y are the centers of the detection
+                #  RegionOfInterest x & y are left- and top-most coords
+                cls.roi.width = int(roi[2])
+                cls.roi.height = int(roi[3])
+                cls.roi.x_offset = int(roi[0] - (cls.roi.width/2.)) # convert to left-most x
+                cls.roi.y_offset = int(roi[1] - (cls.roi.height/2.)) # convert to top-most y
 
                 msg.classifications.append(cls)
         

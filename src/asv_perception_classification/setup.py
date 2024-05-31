@@ -21,7 +21,8 @@ setup(
     entry_points={
         'console_scripts': [
             "video_publisher = asv_perception_classification.video_publisher:main",
-            "yolo_subscriber = asv_perception_classification.yolo_subscriber:main"
+            "yolo_subscriber = asv_perception_classification.yolo_subscriber:main",
+            "classification_debug = asv_perception_classification.classification_debug:main"
         ],
     },
 )

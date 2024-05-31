@@ -9,6 +9,7 @@ setup.py
 ../../build/asv_perception_classification/asv_perception_classification.egg-info/top_level.txt
 ../../build/asv_perception_classification/asv_perception_classification.egg-info/zip-safe
 asv_perception_classification/__init__.py
+asv_perception_classification/classification_debug.py
 asv_perception_classification/video_publisher.py
 asv_perception_classification/yolo_subscriber.py
 resource/asv_perception_classification

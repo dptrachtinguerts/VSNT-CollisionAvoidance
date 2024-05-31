@@ -11,12 +11,17 @@ class VideoPublisherNode(Node):
     def __init__(self):
         super().__init__('video_publisher')
         
+        # parameters
         self.declare_parameter('idx', 0)
         self._index = self.get_parameter('idx').value
+        self.declare_parameter('source', '/home/vicente/videos_for_yolo/VideoCamera.mp4')
+        self.source_ = self.get_parameter('source').value
+
         self.get_logger().info('Video publisher has been started')
+
         self.camera_publisher_ = self.create_publisher(Image, f'n{self._index}/video_topic', 10)
-        self.cap_ = cv2.VideoCapture('/home/vicente/videos_for_yolo/VideoCamera.mp4')  # Change to your video source
-        self.timer_ = self.create_timer(2, self.timer_callback)  
+        self.cap_ = cv2.VideoCapture(self.source_)  # Change to your video source
+        self.timer_ = self.create_timer(1, self.timer_callback)  
         self.bridge = CvBridge()
         
 
