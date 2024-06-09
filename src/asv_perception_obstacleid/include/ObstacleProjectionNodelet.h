@@ -16,6 +16,9 @@
 #include "asv_perception_interfaces/msg/homography.hpp"
 #include "asv_perception_interfaces/msg/classification_array.hpp"
 
+#include <rclcpp_components/register_node_macro.hpp>
+#include <rclcpp/node.hpp>
+
 #include "defs.h"
 
 namespace obstacle_id
@@ -28,7 +31,7 @@ namespace obstacle_id
     Subscriptions:
         ~segmentation:      [sensor_msgs/Image] 2d obstacle map, all pixels with value > 0 are considered obstacle pixels
         ~classification:    [asv_perception_common/ClassificationArray]  Classifications
-        ~rgb_radar:         [asv_perception_common/Homography] rgb to radar homography matrix
+        ~rgb_radar:         [/Homography] rgb to radar homography matrix
     
     Publications:
         ~obstacles:         [asv_perception_common/ObstacleArray] Classified obstacles
@@ -46,41 +49,38 @@ namespace obstacle_id
         ~roi_shrink_limit   [float, default=0]    Percentage limit of how much a classified obstacle ROI can shrink
         ~roi_grow_limit     [float, default=0]    Percentage limit of how much a classified obstacle ROI can grow
     */
-    class ObstacleProjectionNodelet 
-    : public nodelet_topic_tools::NodeletLazy
+    class ObstacleProjectionNodelet : public rclcpp::Node
     {
     public:
 
-        using base_type = nodelet_topic_tools::NodeletLazy;
+        //using base_type = nodelet_topic_tools::NodeletLazy;
         using segmentation_msg_type = sensor_msgs::Image;
-        using classification_msg_type = asv_perception_common::ClassificationArray;
-        using homography_msg_type = asv_perception_common::Homography;
+        using classification_msg_type = asv_perception_interfaces::ClassificationArray;
+        using homography_msg_type = asv_perception_interfaces::Homography;
         
         // default constructor
-        ObstacleProjectionNodelet() = default;
+        //ObstacleProjectionNodelet() = default;
+        ObstacleProjectionNodelet(const rclcpp::NodeOptions & options);
 
     protected:
 
         /** \brief Nodelet initialization routine. */
-        void onInit () override;
+        //void onInit () override;
 
         /** \brief LazyNodelet connection routine. */
-        void subscribe () override;
-        void unsubscribe () override;
+        void subscribe ();
+        void unsubscribe ();
 
         // the callback function to handle input ( classification + segmentation msgs )
-        void sub_callback ( 
-            const typename segmentation_msg_type::ConstPtr&
-            , const typename classification_msg_type::ConstPtr&
-        );
+        // void sub_callback ( 
+        //     const typename segmentation_msg_type::ConstPtr&, 
+        //     const typename classification_msg_type::ConstPtr&);
 
         // the callback function to handle input ( classification msg only )
-        void sub_callback ( 
-            const typename classification_msg_type::ConstPtr&
-        );
+        void sub_callback(const typename classification_msg_type::SharedPtr&);
 
         // homography callback
-        void cb_homography_rgb_radar ( const typename homography_msg_type::ConstPtr& );
+        void cb_homography_rgb_radar(const typename homography_msg_type::SharedPtr&);
         
     private:
 
@@ -88,27 +88,24 @@ namespace obstacle_id
         std::mutex _mtx;
 
         // publishers
-        ros::Publisher 
-            _pub
-            , _pub_cloud
-            ;
+        std::shared_ptr::<PublisherT> _pub, _pub_cloud;
 
         // subscriptions
-        ros::Subscriber 
-            _sub_rgb_radar
+        std::<SubscriptionT> 
+            _sub_rgb_radar,
             // only used if !use_segmentation
-            , _sub_classification_only
-            ;
-        message_filters::Subscriber<segmentation_msg_type> _sub_segmentation;
+            _sub_classification_only;
+            
+        //message_filters::Subscriber<segmentation_msg_type> _sub_segmentation;
         message_filters::Subscriber<classification_msg_type> _sub_classification;
 
         // sync policy for segmentation + classification subscriptions
-        using _seg_cls_sync_policy_type = message_filters::sync_policies::ApproximateTime<segmentation_msg_type, classification_msg_type>;
-        using _seg_cls_synchronizer_type = message_filters::Synchronizer<_seg_cls_sync_policy_type>;
-        boost::shared_ptr<_seg_cls_synchronizer_type> _seg_cls_sync;
+        //using _seg_cls_sync_policy_type = message_filters::sync_policies::ApproximateTime<segmentation_msg_type, classification_msg_type>;
+        //using _seg_cls_synchronizer_type = message_filters::Synchronizer<_seg_cls_sync_policy_type>;
+        //std::shared_ptr<_seg_cls_synchronizer_type> _seg_cls_sync;
 
         // homography msg storage
-        typename asv_perception_interfaces::Homography::ConstPtr _h_rgb_radar;
+        typename asv_perception_interfaces::Homography::SharedPtr _h_rgb_radar;
 
         // parameters
         bool

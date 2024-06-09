@@ -18,11 +18,11 @@
     </description>
   </class> -->
 
-  <!-- <class name="asv_perception_obstacleid/ObstacleProjectionNodelet" type="obstacle_id::ObstacleProjectionNodelet" base_class_type="nodelet::Nodelet">
+  <class type="obstacle_id::ObstacleProjectionNodelet" base_class_type="nodelet::Nodelet">
     <description>
       2D to 3D obstacle backprojection of classified bounding boxes and unclassified pixel backprojection to pointcloud
     </description>
-  </class> -->
+  </class>
   
   <!-- <class name="asv_perception_obstacleid/ObstacleExtractionNodelet" type="obstacle_id::ObstacleExtractionNodelet" base_class_type="nodelet::Nodelet">
     <description>

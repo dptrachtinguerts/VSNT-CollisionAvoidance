@@ -6,7 +6,7 @@
 #ifndef OBSTACLE_PROJECTION_H
 #define OBSTACLE_PROJECTION_H
 
-#include <asv_perception_common/msg/obstacle.hpp>
+#include <asv_perception_interfaces/msg/obstacle.hpp>
 
 #include "defs.h"
 #include "utils.h"

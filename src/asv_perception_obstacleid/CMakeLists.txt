@@ -10,20 +10,27 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(pluginlib REQUIRED)
 pluginlib_export_plugin_description_file(asv_perception_obstacleid plugins.xml)
+
 find_package(pcl_conversions REQUIRED)
 find_package(PCL 1.3 REQUIRED)
+
 find_package(asv_perception_interfaces REQUIRED)
+
 find_package(cv_bridge REQUIRED)
 find_package(OpenCV REQUIRED)
+
 find_package(geometry_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
+
 find_package(tf2 REQUIRED)
 find_package(tf2_ros REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
 
+find_package(rclcpp_components REQUIRED)
+
 
 add_executable(ObstacleProjectionNodelet src/ObstacleProjectionNodelet.cpp)
-ament_target_dependencies(ObstacleProjectionNodelet rclcpp pcl_conversions pluginlib cv_bridge asv_perception_interfaces)
+ament_target_dependencies(ObstacleProjectionNodelet rclcpp pcl_conversions pluginlib cv_bridge asv_perception_interfaces rclcpp_components)
 
 add_executable(RadarToPointCloudNodelet src/RadarToPointCloudNodelet.cpp)
 ament_target_dependencies(RadarToPointCloudNodelet rclcpp pcl_conversions pluginlib)
@@ -61,5 +68,11 @@ add_definitions(
 ament_export_include_directories(
   include
 )
+
+# rclcpp_components_register_node(
+#     ObstacleProjectionNodelet_component
+#     PLUGIN "obstacle_id::ObstacleProjectionNodelet"
+#     EXECUTABLE ObstacleProjectionNodelet
+# )
 
 ament_package()
