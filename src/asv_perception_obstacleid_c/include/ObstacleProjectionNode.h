@@ -1,6 +1,5 @@
 #ifndef OBSTACLEPROJECTIONNODE_H
 #define OBSTACLEPROJECTIONNODE_H
-#endif
 
 #include <rclcpp/rclcpp.hpp>
 #include <asv_perception_interfaces/msg/classification.hpp>
@@ -8,6 +7,8 @@
 #include <asv_perception_interfaces/msg/obstacle_array.hpp>
 #include <sensor_msgs/msg/point_cloud2.hpp>
 #include <mutex>
+
+#include "ClassifiedObstacle2d.h"
 
 namespace obstacle_id {
     /*
@@ -42,26 +43,25 @@ namespace obstacle_id {
             using homography_msg_t = asv_perception_interfaces::msg::Homography;
             using obstacle_arr_msg_t = asv_perception_interfaces::msg::ObstacleArray;
 
-            ObstacleProjectionNode();
+            ObstacleProjectionNode(const rclcpp::NodeOptions & options);
         protected:
-            void on_init(void);
+            // void on_init(void);
             
             void subscribe(void);
             void unsubscribe(void);
 
             void cb_sub_classification(const classification_msg_t::SharedPtr&);
 
-            void sub_callback(const classification_msg_t::SharedPtr&);
-
             void cb_homography_rgb_radar(const homography_msg_t::SharedPtr&);
+
         private:
             std::mutex _mtx;
 
             rclcpp::Publisher<obstacle_arr_msg_t>::SharedPtr _pub_obstacle_arr;
             rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr _pub_cloud;
 
-            rclcpp::Subscription<homography_msg_t>::SharedPtr _sub_rgb_radar;
-            rclcpp::Subscription<classification_msg_t>::SharedPtr _sub_classification_only;
+            rclcpp::Subscription<homography_msg_t::SharedPtr>::SharedPtr _sub_rgb_radar;
+            rclcpp::Subscription<classification_msg_t::SharedPtr>::SharedPtr _sub_classification_only;
 
             homography_msg_t::SharedPtr _h_rgb_radar;
  
@@ -78,3 +78,5 @@ namespace obstacle_id {
             bool _use_segmentation = false;
     }; 
 }
+
+#endif

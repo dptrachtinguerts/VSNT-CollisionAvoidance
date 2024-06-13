@@ -2,6 +2,7 @@
 
 #include <string>
 #include <cv_bridge/cv_bridge.h>
+#include <rclcpp_components/register_node_macro.hpp>
 
 namespace {
     using namespace obstacle_id;
@@ -13,7 +14,7 @@ namespace {
     static const std::string TOPIC_NAME_OUTPUT_CLOUD = "cloud";
 }
 
-ObstacleProjectionNode::ObstacleProjectionNode(void) : Node("obstacle_projection") {
+ObstacleProjectionNode::ObstacleProjectionNode(const rclcpp::NodeOptions & options) : Node("obstacle_projection", options) {
     RCLCPP_INFO(this->get_logger(), "[ObstacleProjectionNode] %s", this->get_name());
 
     this->_pub_obstacle_arr = this->create_publisher<obstacle_arr_msg_t>(TOPIC_NAME_OUTPUT_OBSTACLES, 1);
@@ -65,14 +66,15 @@ ObstacleProjectionNode::ObstacleProjectionNode(void) : Node("obstacle_projection
 }
 
 void ObstacleProjectionNode::subscribe(void) {
-    static const std::uint32_t SYNC_QUEUE_SIZE = 10;
+    // static const std::uint32_t SYNC_QUEUE_SIZE = 10;
 
     std::lock_guard<std::mutex> lg(this->_mtx);
 
-    this->_sub_rgb_radar = this->create_subscription<homography_msg_t>(TOPIC_NAME_INPUT_HOMOGRAPHY_RGB_TO_RADAR,
-                                10, std::bind(&ObstacleProjectionNode::cb_homography_rgb_radar, this, std::placeholders::_1));
+    this->_sub_rgb_radar = this->create_subscription<homography_msg_t::SharedPtr>(TOPIC_NAME_INPUT_HOMOGRAPHY_RGB_TO_RADAR, 
+                                    10, std::bind(&ObstacleProjectionNode::cb_homography_rgb_radar, this, std::placeholders::_1));
+
     if (!this->_use_segmentation) {
-        this->_sub_classification_only = this->create_subscription<classification_msg_t>(TOPIC_NAME_INPUT_CLASSIFICATION,
+        this->_sub_classification_only = this->create_subscription<classification_msg_t::SharedPtr>(TOPIC_NAME_INPUT_CLASSIFICATION,
                                                     10, std::bind(&ObstacleProjectionNode::cb_sub_classification, this, std::placeholders::_1));
     }
 }
@@ -96,7 +98,7 @@ void ObstacleProjectionNode::cb_homography_rgb_radar(const homography_msg_t::Sha
     this->_h_rgb_radar = homogrp_msg;
 }
 
-void ObstacleProjectionNode::sub_callback(const classification_msg_t::SharedPtr& cls_msg) {
+void ObstacleProjectionNode::cb_sub_classification(const classification_msg_t::SharedPtr& cls_msg) {
     std::lock_guard<std::mutex> lg(this->_mtx);
 
     if (!cls_msg || this->count_subscribers(TOPIC_NAME_OUTPUT_OBSTACLES) < 1) {
@@ -108,25 +110,27 @@ void ObstacleProjectionNode::sub_callback(const classification_msg_t::SharedPtr&
         return;
     }
 
-    try {
-        const auto h_rgb_radar = detail::Homography(this->_h_rgb_radar->values.data());
+    // try {
+    //     const auto h_rgb_radar = detail::Homography(this->_h_rgb_radar->values.data());
         
-        const auto child_frame_id = this->_h_rgb_radar->child_frame_id;
+    //     const auto child_frame_id = this->_h_rgb_radar->child_frame_id;
 
-        auto msg = obstacle_arr_msg_t();
-        auto img = cv::Mat();
+    //     auto msg = obstacle_arr_msg_t();
+    //     auto img = cv::Mat();
         
-        msg.obstacles = detail::classified_obstacle_projection::project( 
-                            img, 
-                            *cls_msg, 
-                            h_rgb_radar , 
-                            this->_min_height, 
-                            this->_max_height, 
-                            this->_min_depth, 
-                            this->_max_depth, 
-                            this->_min_distance, 
-                            this->_max_distance, 
-                            this->_roi_grow_limit, 
-                            this->_roi_shrink_limit);
-    }
+    //     msg.obstacles = detail::classified_obstacle_projection::project( 
+    //                         img, 
+    //                         *cls_msg, 
+    //                         h_rgb_radar , 
+    //                         this->_min_height, 
+    //                         this->_max_height, 
+    //                         this->_min_depth, 
+    //                         this->_max_depth, 
+    //                         this->_min_distance, 
+    //                         this->_max_distance, 
+    //                         this->_roi_grow_limit, 
+    //                         this->_roi_shrink_limit);
+    // }
 }
+
+RCLCPP_COMPONENTS_REGISTER_NODE(obstacle_id::ObstacleProjectionNode);
