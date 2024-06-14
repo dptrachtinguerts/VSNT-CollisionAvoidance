@@ -4,6 +4,9 @@
 #include <cv_bridge/cv_bridge.h>
 #include <rclcpp_components/register_node_macro.hpp>
 
+#include "Homography.h"
+#include "classified_obstacle_projection.h"
+
 namespace {
     using namespace obstacle_id;
  
@@ -110,27 +113,48 @@ void ObstacleProjectionNode::cb_sub_classification(const classification_msg_t::S
         return;
     }
 
-    // try {
-    //     const auto h_rgb_radar = detail::Homography(this->_h_rgb_radar->values.data());
+    try {
+        // construct homography
+        const auto 
+            h_rgb_to_radar = detail::Homography( this->_h_rgb_radar->values.data() )
+            ;
         
-    //     const auto child_frame_id = this->_h_rgb_radar->child_frame_id;
+        // obstacles projected to frame
+        const auto child_frame_id = this->_h_rgb_radar->child_frame_id;
 
-    //     auto msg = obstacle_arr_msg_t();
-    //     auto img = cv::Mat();
-        
-    //     msg.obstacles = detail::classified_obstacle_projection::project( 
-    //                         img, 
-    //                         *cls_msg, 
-    //                         h_rgb_radar , 
-    //                         this->_min_height, 
-    //                         this->_max_height, 
-    //                         this->_min_depth, 
-    //                         this->_max_depth, 
-    //                         this->_min_distance, 
-    //                         this->_max_distance, 
-    //                         this->_roi_grow_limit, 
-    //                         this->_roi_shrink_limit);
-    // }
+        // get classified obstacles, publish obstacle message
+        auto msg = asv_perception_interfaces::msg::ObstacleArray();
+        auto img = cv::Mat();
+
+        msg.obstacles = detail::classified_obstacle_projection::project( 
+            img
+            , *cls_msg
+            , h_rgb_to_radar 
+            , this->_min_height
+            , this->_max_height
+            , this->_min_depth
+            , this->_max_depth
+            , this->_min_distance
+            , this->_max_distance
+            , this->_roi_grow_limit
+            , this->_roi_shrink_limit
+            );
+
+        // set headers
+        msg.header = cls_msg->header;
+        msg.header.frame_id = child_frame_id;
+
+        for ( auto& obs : msg.obstacles ) {
+            obs.header = msg.header;
+        }
+            
+        this->_pub_obstacle_arr->publish( msg );
+
+    } catch ( const std::exception& ex ) {
+        RCLCPP_ERROR(this->get_logger(), "std::exception: %s", ex.what() );
+    } catch ( ... ) {
+        RCLCPP_ERROR(this->get_logger(), "unknown exception type");
+    }
 }
 
 RCLCPP_COMPONENTS_REGISTER_NODE(obstacle_id::ObstacleProjectionNode);

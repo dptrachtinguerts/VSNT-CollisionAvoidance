@@ -2,7 +2,7 @@
 #define OBSTACLEPROJECTIONNODE_H
 
 #include <rclcpp/rclcpp.hpp>
-#include <asv_perception_interfaces/msg/classification.hpp>
+#include <asv_perception_interfaces/msg/classification_array.hpp>
 #include <asv_perception_interfaces/msg/homography.hpp>
 #include <asv_perception_interfaces/msg/obstacle_array.hpp>
 #include <sensor_msgs/msg/point_cloud2.hpp>
@@ -39,14 +39,12 @@ namespace obstacle_id {
     */
     class ObstacleProjectionNode : public rclcpp::Node {
         public:
-            using classification_msg_t = asv_perception_interfaces::msg::Classification;
+            using classification_msg_t = asv_perception_interfaces::msg::ClassificationArray;
             using homography_msg_t = asv_perception_interfaces::msg::Homography;
             using obstacle_arr_msg_t = asv_perception_interfaces::msg::ObstacleArray;
 
             ObstacleProjectionNode(const rclcpp::NodeOptions & options);
         protected:
-            // void on_init(void);
-            
             void subscribe(void);
             void unsubscribe(void);
 
