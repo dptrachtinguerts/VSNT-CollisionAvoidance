@@ -28,7 +28,7 @@ namespace utils {
 // convert point type to ros point of type R
 template <typename R=geometry_msgs::msg::Point>
 inline R to_ros_point( const point_type& pt ) {
-    R result = {};
+    R result{};
     result.x = pt.x;
     result.y = pt.y;
     result.z = pt.z;

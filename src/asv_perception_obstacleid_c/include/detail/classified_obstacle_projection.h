@@ -155,7 +155,7 @@ Combines an unclassified obstacle map (optional) with a vector of classification
     Classified obstacle bounding boxes are then removed from the provided obstacle map
     Returns vector of projected Obstacles
 */
-inline std::vector<msg::Obstacle> project( 
+inline std::vector<asv_perception_interfaces::msg::Obstacle> project( 
     image_type& obstacle_map
     , const asv_perception_interfaces::msg::ClassificationArray& classifications
     , const Homography& h
@@ -170,7 +170,7 @@ inline std::vector<msg::Obstacle> project(
 )
 {
     // if obstacle map provided, check inputs
-    if ( !obstacle_map.empty() && ( classifications.image_height != obstacle_map.rows || classifications.image_width !=  obstacle_map.cols ) )
+    if ( !obstacle_map.empty() && ( (int) classifications.image_height != obstacle_map.rows || (int) classifications.image_width != obstacle_map.cols ) )
         throw std::runtime_error("obstacle map image size does not match classification image size");
 
     // foreach classification, construct Obstacle2d
