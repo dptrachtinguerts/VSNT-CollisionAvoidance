@@ -48,7 +48,6 @@ namespace obstacle_id
             void sub_callback(const sensor_msgs::msg::PointCloud2::SharedPtr& );
             
         private:
-
             // parameters
             std::uint32_t 
                 cluster_sz_min_ = 1

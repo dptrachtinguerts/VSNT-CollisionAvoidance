@@ -8,6 +8,8 @@ endif()
 add_library(obstacle_projection_component src/ObstacleProjectionNode.cpp)
 add_library(obstacle_extraction_component src/ObstacleExtractionNode.cpp)
 add_library(pointcloud_concat_component src/PointCloudConcatNode.cpp)
+add_library(pointcloud_filter_component src/PointCloudFilterNode.cpp)
+add_library(radar_to_pointcloud_component src/RadarToPointCloudNode.cpp)
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
@@ -39,6 +41,8 @@ add_definitions(${PCL_DEFINITIONS})
 target_link_libraries(obstacle_projection_component ${PCL_LIBRARIES})
 target_link_libraries(obstacle_extraction_component ${PCL_LIBRARIES})
 target_link_libraries(pointcloud_concat_component ${PCL_LIBRARIES})
+target_link_libraries(pointcloud_filter_component ${PCL_LIBRARIES})
+target_link_libraries(radar_to_pointcloud_component ${PCL_LIBRARIES})
 
 rclcpp_components_register_node(
   obstacle_projection_component
@@ -58,6 +62,18 @@ rclcpp_components_register_node(
   EXECUTABLE pointcloud_concat
 )
 
+rclcpp_components_register_node(
+  pointcloud_filter_component
+  PLUGIN "obstacle_id::PointCloudFilterNode"
+  EXECUTABLE pointcloud_filter
+)
+
+rclcpp_components_register_node(
+  radar_to_pointcloud_component
+  PLUGIN "obstacle_id::RadarToPointCloudNode"
+  EXECUTABLE radar_to_pointcloud
+)
+
 ament_target_dependencies(
   obstacle_projection_component
   rclcpp
@@ -84,6 +100,25 @@ ament_target_dependencies(
   asv_perception_interfaces
   cv_bridge
 )
+
+ament_target_dependencies(
+  pointcloud_filter_component
+  rclcpp
+  rclcpp_components
+  sensor_msgs
+  asv_perception_interfaces
+  cv_bridge
+)
+
+ament_target_dependencies(
+  radar_to_pointcloud_component
+  rclcpp
+  rclcpp_components
+  sensor_msgs
+  asv_perception_interfaces
+  cv_bridge
+)
+
 
 ament_export_include_directories(include)
 
@@ -109,6 +144,24 @@ ament_export_targets(pointcloud_concat_component)
 install(
   TARGETS pointcloud_concat_component
   EXPORT export_pointcloud_concat_component
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
+)
+
+ament_export_targets(pointcloud_filter_component)
+install(
+  TARGETS pointcloud_filter_component
+  EXPORT export_pointcloud_filter_component
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
+)
+
+ament_export_targets(radar_to_pointcloud_component)
+install(
+  TARGETS radar_to_pointcloud_component
+  EXPORT export_radar_to_pointcloud_component
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin
