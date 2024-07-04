@@ -1,0 +1,79 @@
+// Copyright (c) 2020 University of Massachusetts
+// All rights reserved.
+// This source code is licensed under the BSD-style license found in the LICENSE file in the root directory of this source tree.
+// Authors:  Tom Clunie <clunietp@gmail.com>
+
+#ifndef POINTCLOUDFILTERNODELET_H
+#define POINTCLOUDFILTERNODELET_H
+
+#include <rclcpp/rclcpp.hpp>
+#include "sensor_msgs/msg/point_cloud2.hpp"
+
+namespace obstacle_id
+{
+    /*
+    Description
+        Custom pointcloud filtering, including min-distance, outlier removal, and cluster area inclusion/exclusion
+        
+    Subscriptions:
+        ~input:     [sensor_msgs/PointCloud2] input pointcloud
+
+    Publications:
+        ~output:    [sensor_msgs/PointCloud2] filtered pointcloud
+
+    Parameters:
+        ~min_distance_[x,y,z]:   [float, default=0]  minimum distance filter (from origin) for dimension x/y/z, ignored if <= 0
+        ~min_distance:           [float, default=0]  minimum distance filter (radius from origin), ignored if <= 0
+        ~max_distance:           [float, default=NaN]  maximum distance filter (radius from origin), ignored if NaN
+        ~outlier_min_neighbors:  [int, default=0]    minimum number of neighbors within `outlier_radius` for a point to be excluded from removal.  0 means ignored
+        ~outlier_radius:         [float, default=0]  radius for outlier removal
+        ~cluster_tolerance:      [float, default=0]  cluster tolerance.  clustering is ignored if tolerance <= 0
+        ~cluster_inliers:        [bool, default=true]  when filtering by clusters, only output clusters which do/do not (true/false) meet the clustering criteria
+        ~cluster_size_min:       [uint, default=0]   minimum cluster size
+        ~cluster_size_max:       [uint, default=uint max]  maximum cluster size
+        ~cluster_area_min:       [float, default=0]  minimum 2d convex hull area
+        ~cluster_area_max:       [float, default=float max]  maximum 2d convex hull area
+    */
+    class PointCloudFilterNode : public rclcpp::Node {
+        public:            
+            // default constructor
+            PointCloudFilterNode(const rclcpp::NodeOptions & options);
+                                            
+        protected:
+            /** \brief LazyNodelet connection routine. */
+            void subscribe();
+            void unsubscribe();
+
+            // the callback function to handle input from subscription
+            void sub_callback(const sensor_msgs::msg::PointCloud2::SharedPtr& );
+            
+        private:
+
+            // parameters
+            std::uint32_t 
+                cluster_sz_min_ = 1
+                , cluster_sz_max_ = std::numeric_limits<std::uint32_t>::max()
+            ;
+
+            float
+                min_distance_x_ = 0.f
+                , min_distance_y_ = 0.f
+                , min_distance_z_ = 0.f
+                , min_distance_ = 0.f
+                , max_distance_ = NAN
+                , outlier_radius_ = 0.f
+                , cluster_tolerance_ = 0.f
+                , cluster_area_min_ = 0.f
+                , cluster_area_max_ = std::numeric_limits<float>::max()
+                ;
+
+            int outlier_min_neighbors_ = 0;
+
+            bool cluster_inliers_ = true;
+
+            rclcpp::Subscription<sensor_msgs::msg::PointCloud2::SharedPtr>::SharedPtr sub_;
+            rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr pub_;
+    };
+}
+
+#endif  //#ifndef 

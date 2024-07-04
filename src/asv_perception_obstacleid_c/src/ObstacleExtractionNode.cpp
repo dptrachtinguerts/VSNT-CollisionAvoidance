@@ -24,11 +24,11 @@ namespace {
 
 ObstacleExtractionNode::ObstacleExtractionNode(const rclcpp::NodeOptions & options) : Node("obstacle_extraction", options)
 {
-    this->declare_parameter("cluster_size_min", (int64_t) cluster_sz_min_);
-    this->declare_parameter("cluster_size_max", (int64_t) cluster_sz_max_);
-    this->declare_parameter("cluster_tolerance", cluster_tolerance_);
-    this->declare_parameter("cluster_area_min", cluster_area_min_);
-    this->declare_parameter("cluster_area_max", cluster_area_max_);
+    this->declare_parameter("cluster_size_min", (int64_t) this->cluster_sz_min_);
+    this->declare_parameter("cluster_size_max", (int64_t) this->cluster_sz_max_);
+    this->declare_parameter("cluster_tolerance", this->cluster_tolerance_);
+    this->declare_parameter("cluster_area_min", this->cluster_area_min_);
+    this->declare_parameter("cluster_area_max", this->cluster_area_max_);
 
     // Mandatory parameters
     if ( !this->get_parameter("cluster_tolerance", this->cluster_tolerance_ ))

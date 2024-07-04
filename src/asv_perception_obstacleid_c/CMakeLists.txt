@@ -7,6 +7,7 @@ endif()
 
 add_library(obstacle_projection_component src/ObstacleProjectionNode.cpp)
 add_library(obstacle_extraction_component src/ObstacleExtractionNode.cpp)
+add_library(pointcloud_concat_component src/PointCloudConcatNode.cpp)
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
@@ -37,6 +38,7 @@ link_directories(${PCL_LIBRARY_DIRS})
 add_definitions(${PCL_DEFINITIONS})
 target_link_libraries(obstacle_projection_component ${PCL_LIBRARIES})
 target_link_libraries(obstacle_extraction_component ${PCL_LIBRARIES})
+target_link_libraries(pointcloud_concat_component ${PCL_LIBRARIES})
 
 rclcpp_components_register_node(
   obstacle_projection_component
@@ -50,6 +52,12 @@ rclcpp_components_register_node(
   EXECUTABLE obstacle_extraction
 )
 
+rclcpp_components_register_node(
+  pointcloud_concat_component
+  PLUGIN "obstacle_id::PointCloudConcatNode"
+  EXECUTABLE pointcloud_concat
+)
+
 ament_target_dependencies(
   obstacle_projection_component
   rclcpp
@@ -61,6 +69,15 @@ ament_target_dependencies(
 
 ament_target_dependencies(
   obstacle_extraction_component
+  rclcpp
+  rclcpp_components
+  sensor_msgs
+  asv_perception_interfaces
+  cv_bridge
+)
+
+ament_target_dependencies(
+  pointcloud_concat_component
   rclcpp
   rclcpp_components
   sensor_msgs
@@ -83,6 +100,15 @@ ament_export_targets(export_obstacle_extraction_component)
 install(
   TARGETS obstacle_extraction_component
   EXPORT export_obstacle_extraction_component
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
+)
+
+ament_export_targets(pointcloud_concat_component)
+install(
+  TARGETS pointcloud_concat_component
+  EXPORT export_pointcloud_concat_component
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin
