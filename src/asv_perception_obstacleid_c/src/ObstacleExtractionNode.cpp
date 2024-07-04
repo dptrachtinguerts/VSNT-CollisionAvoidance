@@ -49,7 +49,69 @@ ObstacleExtractionNode::ObstacleExtractionNode(const rclcpp::NodeOptions & optio
     this->get_parameter("cluster_area_min", this->cluster_area_min_ );
 
     // publisher
-    this->pub_ = create_publisher<asv_perception_interfaces::msg::ObstacleArray>(TOPIC_NAME_OUTPUT, 1 );
+    this->pub_ = this->create_publisher<asv_perception_interfaces::msg::ObstacleArray>(TOPIC_NAME_OUTPUT, 1 );
+}
+
+void ObstacleExtractionNode::subscribe() {
+    this->sub_ = this->create_subscription<sensor_msgs::msg::PointCloud2::SharedPtr>(TOPIC_NAME_INPUT,
+                                                                                    10, std::bind(&ObstacleExtractionNode::sub_callback, this, std::placeholders::_1));
+}
+
+void ObstacleExtractionNode::unsubscribe() {
+    ;
+}
+
+void ObstacleExtractionNode::sub_callback(const sensor_msgs::msg::PointCloud2::SharedPtr &cloud) {
+    if (this->count_subscribers(TOPIC_NAME_OUTPUT) < 1) {
+        return;
+    }
+
+    if (!utils::is_cloud_valid(cloud)) {
+        RCLCPP_ERROR(this->get_logger(), "Invalid cloud");
+        return;
+    }
+
+    if (cloud->data.empty()) {
+        return;
+    }
+
+    try {
+        pointcloud_type::Ptr pc_ptr(new pointcloud_type());
+        pcl::fromROSMsg( *cloud, *pc_ptr );
+
+        if (pc_ptr->empty()) {
+            return;
+        }
+
+        // perform obstacle extraction
+        auto msg = asv_perception_interfaces::msg::ObstacleArray();
+        msg.header = cloud->header;
+
+        // extract clusters from pointcloud
+        const auto pclusters = detail::PointCluster::extract( 
+            pc_ptr
+            , this->cluster_tolerance_
+            , this->cluster_sz_min_, this->cluster_sz_max_
+            , this->cluster_area_min_, this->cluster_area_max_
+        );
+
+        // convert clusters to obstacles
+        for ( const auto& pcluster : pclusters ) {
+            msg.obstacles.emplace_back(pcluster.to_obstacle());
+        }
+
+        // set header for obstacles
+        for ( auto& obs : msg.obstacles ) {
+            obs.header = cloud->header;
+        }
+
+        this->pub_->publish(msg);
+
+    } catch ( const std::exception& ex ) {  // pcl exceptions inherit from std::runtime_error
+        RCLCPP_ERROR(this->get_logger(), "std::exception: %s", ex.what() );
+    } catch ( ... ) {
+        RCLCPP_ERROR(this->get_logger(), "unknown exception type");
+    }
 }
 
 RCLCPP_COMPONENTS_REGISTER_NODE(obstacle_id::ObstacleExtractionNode);

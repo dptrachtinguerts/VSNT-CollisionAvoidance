@@ -54,7 +54,7 @@ namespace obstacle_id
             void sub_callback ( const sensor_msgs::msg::PointCloud2::SharedPtr& );
             
         private:
-            rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr sub_;
+            rclcpp::Subscription<sensor_msgs::msg::PointCloud2::SharedPtr>::SharedPtr sub_;
             rclcpp::Publisher<asv_perception_interfaces::msg::ObstacleArray>::SharedPtr pub_;
 
         public:
