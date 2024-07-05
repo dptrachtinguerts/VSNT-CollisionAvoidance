@@ -7,6 +7,7 @@
 #include <math.h> // pow
 
 #include <pcl/pcl_base.h>
+#include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
 #include <pcl/filters/extract_indices.h>
 #include <pcl/filters/conditional_removal.h>
@@ -82,8 +83,8 @@ void PointCloudFilterNode::unsubscribe ()
 void PointCloudFilterNode::sub_callback (
 		const sensor_msgs::msg::PointCloud2::SharedPtr& cloud)
 {
-	using pointcloud_type = pcl::PointCloud<point_type>;
 	using point_type = pcl::PointXYZ;
+	using pointcloud_type = pcl::PointCloud<point_type>;
 	// No subscribers, no work
 	if ( this->count_subscribers(TOPIC_NAME_OUTPUT) < 1 ) {
 		return;
@@ -126,8 +127,7 @@ void PointCloudFilterNode::sub_callback (
 			extract.setInputCloud( pc_ptr );
 			extract.setIndices(inliers);
 
-			/* Ao setar cluster_inliers_ como true, os inliers são retirados da 
-					filtragem */
+			/* Ao setar cluster_inliers_ como true, os inliers são retirados da filtragem */
 			extract.setNegative( !this->cluster_inliers_ );  // setNegative(true) = remove the inliers
 			extract.filter(*pc_ptr);
 		}
@@ -225,8 +225,11 @@ void PointCloudFilterNode::sub_callback (
 			outrem.filter(*pc_ptr);
 		}
 
+		sensor_msgs::msg::PointCloud2 msg;
+		pcl::toROSMsg(*pc_ptr, msg);
+
 		// publish
-		this->pub_->publish( pc_ptr );
+		this->pub_->publish( msg );
 
 	} catch ( const std::exception& ex ) {  // pcl exceptions inherit from std::runtime_error
 		RCLCPP_ERROR(this->get_logger(), "std::exception: %s", ex.what() );

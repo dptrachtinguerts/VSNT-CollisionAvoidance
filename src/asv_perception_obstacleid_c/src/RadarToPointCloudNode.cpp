@@ -26,9 +26,8 @@ namespace {
     /* Fila de segmentos */
     // sums the differences in angles for all segments, assumes clockwise rotation/increasing angles
     float sum_of_angles( const std::deque<std::pair<sensor_msgs::msg::PointCloud2, float>>& segments ) {
-
         float result = 0.f;
-        for ( int i = 1; i < segments.size(); ++i ) {
+        for ( std::size_t i = 1; i < segments.size(); ++i ) {
         auto current_angle = segments[i].second;
         auto prev_angle = segments[i-1].second;
         if ( prev_angle > current_angle ) // crossover
