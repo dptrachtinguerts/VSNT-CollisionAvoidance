@@ -11,7 +11,6 @@ add_library(pointcloud_concat_component src/PointCloudConcatNode.cpp)
 add_library(pointcloud_filter_component src/PointCloudFilterNode.cpp)
 add_library(radar_to_pointcloud_component src/RadarToPointCloudNode.cpp)
 
-# find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_components REQUIRED)
@@ -22,7 +21,6 @@ find_package(pcl_conversions REQUIRED)
 find_package(image_transport REQUIRED)
 find_package(PCL REQUIRED)
 
-# include_directories(include)
 include_directories(
   include
   include/detail/
@@ -119,7 +117,6 @@ ament_target_dependencies(
   cv_bridge
 )
 
-
 ament_export_include_directories(include)
 
 ament_export_targets(export_obstacle_projection_component)
@@ -140,7 +137,7 @@ install(
   RUNTIME DESTINATION bin
 )
 
-ament_export_targets(pointcloud_concat_component)
+ament_export_targets(export_pointcloud_concat_component)
 install(
   TARGETS pointcloud_concat_component
   EXPORT export_pointcloud_concat_component
@@ -149,7 +146,7 @@ install(
   RUNTIME DESTINATION bin
 )
 
-ament_export_targets(pointcloud_filter_component)
+ament_export_targets(export_pointcloud_filter_component)
 install(
   TARGETS pointcloud_filter_component
   EXPORT export_pointcloud_filter_component
@@ -158,7 +155,7 @@ install(
   RUNTIME DESTINATION bin
 )
 
-ament_export_targets(radar_to_pointcloud_component)
+ament_export_targets(export_radar_to_pointcloud_component)
 install(
   TARGETS radar_to_pointcloud_component
   EXPORT export_radar_to_pointcloud_component
